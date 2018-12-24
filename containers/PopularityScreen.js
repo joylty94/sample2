@@ -11,14 +11,20 @@ export default class PopularityScreen extends Component {
         page: 5
     };
     
-    async componentDidMount() {
-        await this.fetchData()
+    componentDidMount() {
+        this.fetchData()
     }
 
+
     fetchData = async () => {
-        await axios.get(`http://localhost:8082/v1/posts?limit=${this.state.page}&order=desc&comments=0&sort=likes`).then(response => {
-            this.setState({ data: response })
-        });
+        this.setState({ loading: true })
+        try {
+            await axios.get(`http://localhost:8082/v1/posts?limit=${this.state.page}&order=desc&comments=0&sort=likes`).then(response => {
+                this.setState({ data: response, loading: false })
+            });
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     handleEnd = () => {
