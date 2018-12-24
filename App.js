@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { View, Text } from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 
-import HomeScreen from './screen/HomeScreen';
 import LoginScreen from './screen/LoginScreen';
 import InformationScreen from './screen/InformationScreen';
 import TabScreen from './screen/TabScreen';

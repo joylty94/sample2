@@ -1,14 +1,16 @@
 import React, { Component } from "react";
-import { StyleSheet, TouchableWithoutFeedback, Animated, View } from "react-native";
+import { StyleSheet, TouchableWithoutFeedback, Animated, View, Text, Image, TouchableOpacity } from "react-native";
 import {
-    Left, Body, Right, Button, Icon, Card, CardItem, Text,
-} from 'native-base';
+    AntDesign,
+} from '@expo/vector-icons';
+import Button from 'react-native-button'
 
 export default class NoteListAnimatedComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            animatePress: new Animated.Value(1)
+            animatePress: new Animated.Value(1),
+            lines: false
         }
     }
 
@@ -31,7 +33,8 @@ export default class NoteListAnimatedComponent extends Component {
         // this.props.navigation.navigate(DetailNoteScreen, this.props.item)
     }
     render() {
-        const { itemName, itemAdr, itemText, itemTime, itemLikes, itemComments, item } = this.props
+        const { item } = this.props
+        console.log('111', item)
         return (
             <TouchableWithoutFeedback
                 onPressIn={() => this.AnimateIn()}
@@ -45,48 +48,80 @@ export default class NoteListAnimatedComponent extends Component {
                         }
                     ]
                 }, styles.listView]}>
-                    <Card>
-                        <CardItem>
-                            <Left>
-                                <View style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: 'blue' }}></View>
-                                <Body>
-                                    <Text>{item.itemName}</Text>
-                                    <Text note>{item.itemAdr}</Text>
-                                </Body>
-                            </Left>
-                        </CardItem>
-                        <View style={{ paddingHorizontal: 5 }}>
-                            <Text style={{ fontSize: 18 }}>
-                                {item.itemText}
-                            </Text>
-                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                <Button transparent dark>
-                                    <Text style={{ fontSize: 15 }}>더보기</Text>
-                                </Button>
+                    <View>
+                        <View style={{ flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:10, paddingTop:10}}>
+                            <View style={{flexDirection:'row', alignItems:'center'}}>
+                                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: 'blue', marginRight: 10 }}></View>
+                                <View>
+                                    <Text style={{ marginBottom: 5 }}>{item.profile.nick_name}</Text>
+                                    <Text note>{item.target_pin.title}</Text>
+                                </View>
                             </View>
+                            <Button>
+                                <AntDesign name='ellipsis1' size='25'/>
+                            </Button>
                         </View>
-                        <CardItem cardBody>
-                            <View style={{ height: 200, width: 200, flex: 1, borderWidth: 1, }}>
-                            </View>
-                        </CardItem>
-                        <CardItem>
-                            <Left>
-                                <Text>{item.itemTime}</Text>
-                            </Left>
-                            <Body>
-                                <Button transparent>
-                                    <Icon active name="thumbs-up" style={{ padding: 0 }} />
-                                    <Text>{item.itemLikes}</Text>
-                                </Button>
-                            </Body>
-                            <Right>
-                                <Button transparent>
-                                    <Icon active name="chatbubbles" />
-                                    <Text>{item.itemComments}</Text>
-                                </Button>
-                            </Right>
-                        </CardItem>
-                    </Card>
+                        {
+                            (this.state.lines) 
+                            ?
+                                <View style={{ padding: 10 }}>
+                                    <Text numberOfLines={false} style={{ fontSize: 18, fontWeight: '300', textAlign: 'justify' }}>
+                                        {item.content}
+                                    </Text>
+                                </View>
+                            :
+                                (item.content.length < 500)
+                                ?
+                                    <View style={{ padding: 10 }}>
+                                        <Text numberOfLines={10} style={{ fontSize: 16, fontWeight: '300', marginBottom: 8, textAlign: 'justify' }}>
+                                            {item.content}
+                                        </Text>
+                                    </View>   
+                                :
+                                    <View style={{ padding: 10}}>
+                                        <Text numberOfLines={10} style={{ fontSize: 16, fontWeight: '300', marginBottom: 8, textAlign: 'justify' }}>
+                                            {item.content}
+                                        </Text>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                            <Button onPress={() => this.setState({
+                                                lines: true
+                                            })}
+                                            style={{ fontSize: 14, color:'#000'}}> 
+                                            더보기
+                                            </Button>
+                                        </View>
+                                    </View>        
+                        }
+                        {
+                            (item.url_meta)
+                            ?
+                                <TouchableOpacity style={{ flex:1, flexDirection:'column', marginHorizontal: 10, marginBottom:10, borderWidth: 1, borderColor:'rgb(73,80,87)'}}>
+                                    <Image source={{ uri: item.url_meta.image }} style={{ height: 200, width: null, flex: 1 }} />
+                                    <View style={{padding:5}}>
+                                        <Text style={{marginBottom:3, fontSize:18}}
+                                            numberOfLines={1}>{item.url_meta.title}</Text>
+                                        <Text
+                                            numberOfLines={3}>{item.url_meta.description}</Text>
+                                        <Text style={{ fontSize: 12, color:'rgb(134,142,150)', marginTop:3}}
+                                            numberOfLines={1}>{item.url_meta.url}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            : null
+                        }
+                        
+                        <View style={{ flexDirection: 'row', alignItems: 'center',
+                         justifyContent: 'flex-end', paddingHorizontal: 20,
+                        backgroundColor:'rgb(241,243,245)', paddingVertical:10}}>
+                            <Button style={{ fontSize: 16, color:'#000', marginRight: 5}}>
+                            좋아요
+                            </Button>
+                            <Text style={{ fontSize: 16, marginRight: 10 }}>{item.likes}</Text>
+                            <Button style={{ color: '#000', marginRight: 5}}>
+                            댓글
+                            </Button>
+                            <Text style={{ fontSize: 16 }}>{item.comments}</Text>
+                        </View>
+                    </View>
                 </Animated.View>
             </TouchableWithoutFeedback>
         )
@@ -95,12 +130,7 @@ export default class NoteListAnimatedComponent extends Component {
 
 const styles = StyleSheet.create({
     listView: {
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderWidth: 1,
-        marginTop: 10,
-        borderColor: "rgb(173,181,189)",
+        // marginBottom: 10,
         backgroundColor: "rgb(255,255,255)",
-        borderRadius: 5
     },
 })
