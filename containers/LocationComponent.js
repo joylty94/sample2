@@ -1,10 +1,11 @@
-import React, { Component } from "react";
-import { StyleSheet, FlatList, ScrollView, Text, ActivityIndicator } from "react-native";
+import React, { Component } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, FlatList, Platform } from 'react-native';
 import axios from 'axios';
+import { Constants, Location, Permissions } from 'expo';
 
 import NoteListAnimatedComponent from "../components/NoteListAnimatedComponent";
 
-export default class NormalComponent extends Component {
+export default class LocationComponent extends Component {
     state = {
         data: null,
         errorMessage: null,
@@ -13,20 +14,25 @@ export default class NormalComponent extends Component {
     };
 
     componentDidMount() {
-        this.fetchData()
+        if (Platform.OS === 'android' && !Constants.isDevice) {
+            this.setState({
+                errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+            });
+        } else {
+            this._getLocationAsync();
+        }
     }
 
-    fetchData = async () => {
+    _getLocationAsync = async () => {
         this.setState({ loading: true })
-        await axios.get(`http://35.243.89.78:8082/v1/posts?limit=${this.state.page}&order=desc&comments=0`).then(response => {
+        await axios.get(`http://35.243.89.78:8082/v1/posts?limit=5&order=desc&latlng=${this.props.latitude},${this.props.longitude}`).then(response => {
             this.setState({ data: response, loading: false })
         }).catch(e => {
             console.log(e)
         });
-    }
+    };
 
     handleEnd = () => {
-        console.log('실행')
         this.setState({
             page: this.state.page + 5
         })
@@ -34,21 +40,22 @@ export default class NormalComponent extends Component {
     }
 
     render() {
-        console.log('111', this.state.page)
-        console.log('loading1', this.state.loading)
+        console.log('333', this.state.page)
+        console.log('loading3', this.state.loading)
         const { ...rest } = this.props;
         if (this.state.data) {
+            console.log('asdfe', this.state.data.data.result_data)
             return (
                 <ScrollView style={styles.container}>
                     <FlatList
                         data={this.state.data.data.result_data.posts}
                         extraData={this.state.page}
                         // onEndReached={this.handleEnd}
-                        // onEndReachedThreshold={0}
-                        ListFooterComponent={() => 
+                        // onEndReachedThreshold={0.5}
+                        ListFooterComponent={() =>
                             this.state.loading
-                            ? <ActivityIndicator animating />
-                            : null }
+                                ? <ActivityIndicator animating />
+                                : null}
                         renderItem={({ item, index }) => {
                             return (
                                 <NoteListAnimatedComponent item={item} {...rest} />
@@ -59,7 +66,7 @@ export default class NormalComponent extends Component {
                 </ScrollView>
             )
         }
-        return <ActivityIndicator animating />
+        return <ActivityIndicator />
     }
 }
 
@@ -69,3 +76,4 @@ const styles = StyleSheet.create({
         backgroundColor: "rgb(241,243,245)"
     },
 })
+

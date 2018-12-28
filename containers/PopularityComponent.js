@@ -4,11 +4,12 @@ import axios from 'axios';
 
 import NoteListAnimatedComponent from "../components/NoteListAnimatedComponent";
 
-export default class PopularityScreen extends Component {
+export default class PopularityComponent extends Component {
     state = {
         data: null,
         errorMessage: null,
-        page: 5
+        page: 5,
+        loading: false,
     };
     
     componentDidMount() {
@@ -18,26 +19,24 @@ export default class PopularityScreen extends Component {
 
     fetchData = async () => {
         this.setState({ loading: true })
-        try {
-            await axios.get(`http://localhost:8082/v1/posts?limit=${this.state.page}&order=desc&comments=0&sort=likes`).then(response => {
-                this.setState({ data: response, loading: false })
-            });
-        } catch (e) {
+        await axios.get(`http://35.243.89.78:8082/v1/posts?limit=${this.state.page}&order=desc&comments=0&sort=likes`).then(response => {
+            this.setState({ data: response, loading: false })
+        }).catch(e => {
             console.log(e)
-        }
+        });
     }
 
     handleEnd = () => {
+        console.log('실행')
         this.setState({
-            page: this.state.page + 5,
-        },
-            () => {
-                this.fetchData()
-            })
+            page: this.state.page + 5
+        })
+        this.fetchData()
     }
 
     render() {
-        console.log('111', this.state.page)
+        console.log('222', this.state.page)
+        console.log('loading2', this.state.loading)
         const { ...rest } = this.props;
         if (this.state.data) {
             return (
@@ -45,8 +44,8 @@ export default class PopularityScreen extends Component {
                     <FlatList
                         data={this.state.data.data.result_data.posts}
                         extraData={this.state.page}
-                        onEndReached={this.handleEnd}
-                        onEndReachedThreshold={0}
+                        // onEndReached={this.handleEnd}
+                        // onEndReachedThreshold={0.5}
                         ListFooterComponent={() =>
                             this.state.loading
                                 ? <ActivityIndicator animating />
@@ -61,7 +60,7 @@ export default class PopularityScreen extends Component {
                 </ScrollView>
             )
         }
-        return <ActivityIndicator animating />
+        return <ActivityIndicator />
     }
 }
 

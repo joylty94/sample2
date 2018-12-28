@@ -26,20 +26,19 @@ export default class NoteListAnimatedComponent extends Component {
             duration: 200,
         }).start()
     }
-    handleSearching = (search) => {
-        if (search) {
-            this.props.onSearching()
-        }
-        // this.props.navigation.navigate(DetailNoteScreen, this.props.item)
+    handleDetail = (item) => {
+        this.props.navigation.navigate('Detail', item)
+    }
+    handleWebview = (item) => {
+        this.props.navigation.navigate('Webview', item.url_meta)
     }
     render() {
         const { item } = this.props
-        console.log('111', item)
         return (
             <TouchableWithoutFeedback
                 onPressIn={() => this.AnimateIn()}
                 onPressOut={() => this.AnimateOut()}
-                // onPress={() => this.handleSearching(search)}
+                onPress={() => this.handleDetail(item)}
                 >
                 <Animated.View style={[{
                     transform: [
@@ -95,7 +94,9 @@ export default class NoteListAnimatedComponent extends Component {
                         {
                             (item.url_meta)
                             ?
-                                <TouchableOpacity style={{ flex:1, flexDirection:'column', marginHorizontal: 10, marginBottom:10, borderWidth: 1, borderColor:'rgb(73,80,87)'}}>
+                                <TouchableOpacity 
+                                    style={{ flex:1, flexDirection:'column', marginHorizontal: 10, marginBottom:10, borderWidth: 1, borderColor:'rgb(73,80,87)'}}
+                                    onPress={() => this.handleWebview(item)}>
                                     <Image source={{ uri: item.url_meta.image }} style={{ height: 200, width: null, flex: 1 }} />
                                     <View style={{padding:5}}>
                                         <Text style={{marginBottom:3, fontSize:18}}
@@ -107,8 +108,7 @@ export default class NoteListAnimatedComponent extends Component {
                                     </View>
                                 </TouchableOpacity>
                             : null
-                        }
-                        
+                        }                        
                         <View style={{ flexDirection: 'row', alignItems: 'center',
                          justifyContent: 'flex-end', paddingHorizontal: 20,
                         backgroundColor:'rgb(241,243,245)', paddingVertical:10}}>

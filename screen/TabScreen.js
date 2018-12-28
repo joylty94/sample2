@@ -3,7 +3,7 @@ import {
     Container, Header, Left, Body, Right, Button, Icon, Title,
     Tab, Tabs, ScrollableTab, Footer, FooterTab, Text
 } from 'native-base';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import {
     Feather,
     AntDesign,
@@ -13,55 +13,47 @@ import {
 import axios from 'axios';
 import { Constants, Location, Permissions } from 'expo';
 import NormalComponent from '../containers/NormalComponent';
-import PopularityScreen from '../containers/PopularityScreen';
+import PopularityComponent from '../containers/PopularityComponent';
+import LocationComponent from '../containers/LocationComponent';
 
 export default class TabScreen extends Component {
     state = {
-        location: null,
         errorMessage: null,
+        loading: false,
+        location: null,
         latitude: null,
         longitude: null,
     };
 
-    // componentWillMount() {
-    //     if (Platform.OS === 'android' && !Constants.isDevice) {
-    //         this.setState({
-    //             errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-    //         });
-    //     } else {
-    //         this._getLocationAsync();
-    //     }
-    // }
+    componentDidMount() {
+        if (Platform.OS === 'android' && !Constants.isDevice) {
+            this.setState({
+                errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+            });
+        } else {
+            this._getLocationAsync();
+        }
+    }
 
-    // _getLocationAsync = async () => {
-    //     let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    //     if (status !== 'granted') {
-    //         this.setState({
-    //             errorMessage: 'Permission to access location was denied',
-    //         });
-    //     }
+    _getLocationAsync = async () => {
+        this.setState({ loading: true })
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        if (status !== 'granted') {
+            this.setState({
+                errorMessage: 'Permission to access location was denied',
+            });
+        }
 
-    //     let location = await Location.getCurrentPositionAsync({});
-    //     this.setState({ location });
-    //     this.setState({ latitude: location.coords.latitude,
-    //         longitude: Math.abs(location.coords.longitude)
-    //         })
-    //     await axios.get(`http://172.30.1.36:8082/v1/location?latlng=${this.state.latitude},${this.state.longitude}`).then(response => {
-    //         console.log("정보", response)
-    //     });
-    // };
-
+        let location = await Location.getCurrentPositionAsync({});
+        this.setState({
+            location,
+            latitude: location.coords.latitude,
+            longitude: Math.abs(location.coords.longitude),
+            loading: false
+        })
+    };
     render() {
-        // let text = 'Waiting..';
-        // if (this.state.errorMessage) {
-        //     text = this.state.errorMessage;
-        // } else if (this.state.location) {
-        //     text = JSON.stringify(this.state.location);
-        // }
         const { ...rest } = this.props;
-        // console.log("위치정보1",this.state.location)
-        // console.log("위도", this.state.latitude)
-        // console.log("경도", this.state.longitude)
         return (
             <Container>
                 <Header style={{paddingTop:30}}>
@@ -81,10 +73,10 @@ export default class TabScreen extends Component {
                         <NormalComponent { ...rest}/>
                     </Tab>
                     <Tab heading="인기">
-                        <PopularityScreen {...rest}/>
+                        <PopularityComponent {...rest}/>
                     </Tab>
                     <Tab heading="근처">
-                        <NormalComponent {...rest}/>
+                        <LocationComponent {...rest} latitude={this.state.latitude} longitude={this.state.longitude} />
                     </Tab>
                 </Tabs>
                 <Footer>
@@ -111,10 +103,3 @@ export default class TabScreen extends Component {
         )
     }
 }
-
-// const styles = StyleSheet.create({
-//     headerContainer :{
-//         height: Platform.OS === 'android' ? 76 : 100,
-//         marginTop: Platform.OS === 'ios' ? 0 : 24,
-//     }
-// })

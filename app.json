@@ -20,10 +20,18 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
-      "**/*"
+      "assets/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.exp.sample1717",
       "supportsTablet": true
-    }
+    },
+    "android": {
+      "package": "com.exp.sample1717",
+      "permissions": [
+        ""
+      ]
+    },
+    "description": ""
   }
 }

@@ -8,8 +8,10 @@ import InformationScreen from './screen/InformationScreen';
 import TabScreen from './screen/TabScreen';
 import SearchScreen from './screen/SearchScreen';
 import AlarmScreen from './screen/AlarmScreen';
-import ProfileScreen from './screen/ProfileScreen'
-import GeolocationScreen from './screen/GeolocationScreen';
+import ProfileScreen from './screen/ProfileScreen';
+import DetailScreen from './screen/DetailScreen';
+import WebviewScreen from './screen/WebviewScreen';
+import WritingScreen from './screen/WritingScreen';
 
 const LoginNavigator = createStackNavigator(
   {
@@ -29,6 +31,14 @@ const LoginNavigator = createStackNavigator(
 
 const AppNavigator = createStackNavigator(
   {
+    Login: {
+      screen: LoginScreen,
+      navigationOptions: () => {
+        header = null;
+        return { header }
+      }
+    },
+    Information: InformationScreen,
     Home: {
       screen: TabScreen,
       navigationOptions: () => {
@@ -56,10 +66,24 @@ const AppNavigator = createStackNavigator(
         header = null;
         return { header }
       },
+    },
+    Detail: {
+      screen: DetailScreen,
+      // navigationOptions: () => {
+      //   header = null;
+      //   return { header }
+      // },
+    },
+    Webview: {
+      screen: WebviewScreen,
+      // navigationOptions: () => {
+      //   header = null;
+      //   return { header }
+      // },
     }
   },
   {
-    initialRouteName: "Home"
+    initialRouteName: "Login"
   }
 );
 
@@ -90,7 +114,7 @@ export default class App extends Component {
       return <Expo.AppLoading />;
     } else
       return (
-        <AppContainer />
+        <WritingScreen />
       );
   }
 }

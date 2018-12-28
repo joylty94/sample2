@@ -6,7 +6,7 @@ import {
     AntDesign, MaterialIcons
 } from '@expo/vector-icons';
 import { View, StyleSheet } from 'react-native';
-export default class FixedLabelExample extends Component {
+export default class LoginScreen extends Component {
     render() {
         return (
             <Container style={{marginTop:35, paddingBottom:40, flex:1, alignItems:'center', justifyContent:'space-between',}}>
@@ -14,7 +14,7 @@ export default class FixedLabelExample extends Component {
                 <View style={{width:'95%'}}>
                     <View style={styles.buttonContainer}>
                         <Button block danger style={{ marginBottom: 10 }} onPress={() => this.props.navigation.navigate('Information')}>
-                            <Text>Danger</Text>
+                            <Text>회원가입</Text>
                         </Button>
                         <Button block style={{ marginBottom: 10 }}>
                             <Text>Primary</Text>
