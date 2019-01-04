@@ -3,16 +3,36 @@ import { StyleSheet, TouchableWithoutFeedback, Animated, View, Text, Image, Touc
 import {
     AntDesign,
 } from '@expo/vector-icons';
-import Button from 'react-native-button'
+import Button from 'react-native-button';
+import ModalDropdown from 'react-native-modal-dropdown';
+import axios from 'axios';
 
 export default class NoteListAnimatedComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
             animatePress: new Animated.Value(1),
-            lines: false
+            lines: false,
+            like: null,
         }
     }
+
+    // handleLikes = async () => {
+    //     console.log('토큰', this.props.token)
+    //     await axios.put(`http://35.243.89.78:8082/v1/like/post/${this.props.item.post_id}`,{
+
+    //     },
+    //     {
+    //             headers: {
+    //                 'content-type': 'application/json',
+    //                 'x-access-token': this.props.token
+    //             },
+    //         })
+    //         .then(response => {
+    //             console.log('성공', response)
+    //         })
+    //         .catch(e => { console.log('에러', e) });
+    // }
 
     AnimateIn = () => {
         Animated.timing(this.state.animatePress, {
@@ -26,19 +46,20 @@ export default class NoteListAnimatedComponent extends Component {
             duration: 200,
         }).start()
     }
-    handleDetail = (item) => {
-        this.props.navigation.navigate('Detail', item)
+    handleDetail = (item, token) => {
+        this.props.navigation.navigate('Detail',  {item: ({...item, token })})
     }
     handleWebview = (item) => {
         this.props.navigation.navigate('Webview', item.url_meta)
     }
     render() {
-        const { item } = this.props
+        const { item } = this.props;
+        console.log('아이템', item.post_id)
         return (
             <TouchableWithoutFeedback
                 onPressIn={() => this.AnimateIn()}
                 onPressOut={() => this.AnimateOut()}
-                onPress={() => this.handleDetail(item)}
+                onPress={() => this.handleDetail(item, this.props.token)}
                 >
                 <Animated.View style={[{
                     transform: [
@@ -57,7 +78,7 @@ export default class NoteListAnimatedComponent extends Component {
                                 </View>
                             </View>
                             <Button>
-                                <AntDesign name='ellipsis1' size='25'/>
+                                <AntDesign name='ellipsis1' size={25}/>
                             </Button>
                         </View>
                         {
@@ -112,7 +133,10 @@ export default class NoteListAnimatedComponent extends Component {
                         <View style={{ flexDirection: 'row', alignItems: 'center',
                          justifyContent: 'flex-end', paddingHorizontal: 20,
                         backgroundColor:'rgb(241,243,245)', paddingVertical:10}}>
-                            <Button style={{ fontSize: 16, color:'#000', marginRight: 5}}>
+                            <Button
+                                style={{ fontSize: 16, color:'#000', marginRight: 5}}
+                                // onPress={() => this.handleLikes()}
+                                >
                             좋아요
                             </Button>
                             <Text style={{ fontSize: 16, marginRight: 10 }}>{item.likes}</Text>

@@ -1,7 +1,11 @@
 import * as Expo from "expo";
 import React, { Component } from "react";
 import { View, Text } from 'react-native';
+import thunk from 'redux-thunk';
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from 'redux';
 import { createStackNavigator, createAppContainer } from "react-navigation";
+import rootReducer from './ducks';
 
 import LoginScreen from './screen/LoginScreen';
 import InformationScreen from './screen/InformationScreen';
@@ -80,6 +84,13 @@ const AppNavigator = createStackNavigator(
       //   header = null;
       //   return { header }
       // },
+    },
+    Writing: {
+      screen: WritingScreen,
+      // navigationOptions: () => {
+      //   header = null;
+      //   return { header }
+      // },
     }
   },
   {
@@ -88,6 +99,8 @@ const AppNavigator = createStackNavigator(
 );
 
 const AppContainer = createAppContainer(AppNavigator);
+
+store = createStore(rootReducer, applyMiddleware(thunk));
 
 export default class App extends Component {
   constructor() {
@@ -114,7 +127,9 @@ export default class App extends Component {
       return <Expo.AppLoading />;
     } else
       return (
-        <WritingScreen />
+        <Provider store={store}>
+          <AppContainer />
+        </Provider>
       );
   }
 }

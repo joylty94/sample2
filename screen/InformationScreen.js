@@ -3,8 +3,10 @@ import React, {Component} from "react";
 import { View, StyleSheet, TextInput, Alert } from "react-native";
 import { Button, Text, CheckBox } from 'native-base';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { dispatchToken } from '../ducks/informationScreen';
 
-export default class InformationScreen extends Component {
+class InformationScreen extends Component {
     state = {
         nickName: null,
         email: null,
@@ -43,15 +45,12 @@ export default class InformationScreen extends Component {
             profile_image: "default8"
         })
         .then(response => { 
-            console.log(response) 
-            this.props.navigation.navigate('Home')
+            this.props.onToken(this.props.navigation, response)
         })
         .catch(response => { console.log(response) });
     }
 
     render() {
-        console.log('email', this.state.email)
-        console.log('nickName', this.state.nickName)
         return (
                 <View style={{flax:1}}>
                 <View style={{ marginTop: 10, paddingHorizontal: 10 }}>
@@ -130,6 +129,19 @@ export default class InformationScreen extends Component {
         );
     }
 }
+
+export default connect(
+    // mapStateToProps
+    state => ({
+        token: state.informationScreen.token,
+    }),
+    // mapDispatchToProps
+    dispatch => ({
+        onToken: (navigation, token) => {
+            dispatch(dispatchToken(navigation, token));
+        },
+    }),
+)(InformationScreen);
 
 const styles = StyleSheet.create({
     formContainer:{

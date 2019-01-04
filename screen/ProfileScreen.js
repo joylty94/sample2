@@ -54,19 +54,19 @@ export default class ProfileScreen extends Component {
                 <Footer>
                     <FooterTab>
                         <Button badge vertical onPress={() => this.props.navigation.navigate('Home')}>
-                            <AntDesign name="home" size="25" />
+                            <AntDesign name="home" size={25} />
                             <Text>홈</Text>
                         </Button>
                         <Button vertical onPress={() => this.props.navigation.navigate('Search')}>
-                            <FontAwesome name="compass" size="25" />
+                            <FontAwesome name="compass" size={25} />
                             <Text>탐색</Text>
                         </Button>
                         <Button badge vertical onPress={() => { this.props.navigation.navigate('Alarm') }}>
-                            <MaterialIcons active name="access-alarm" size="25" />
+                            <MaterialIcons active name="access-alarm" size={25} />
                             <Text>알람</Text>
                         </Button>
                         <Button vertical active>
-                            <MaterialIcons name="person" size="25" />
+                            <MaterialIcons name="person" size={25} />
                             <Text>프로필</Text>
                         </Button>
                     </FooterTab>
