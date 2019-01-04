@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { tabScreenNormalSuccess } from './tabScreen';
 
 export const LOADING = 'detailScreen/LOADING';
 export const SUCCESS = "detailScreen/SUCCESS";
@@ -87,5 +88,18 @@ export const dispatchLiked = () => async (dispatch, getstate) => {
                 }
             })
             .catch(e => { console.log('에러', e) });
+    }
+};
+
+export const dispatchBackData = (item, navigation) => async (dispatch, getstate) => {
+    const stateItem = getstate();
+    const normalItem = stateItem.tabScreen.normal;
+    if(item.num === 1){
+        console.log("1", normalItem)
+        let updateNum = normalItem.findIndex((data) => data.post_id === item.post_id);
+        normalItem.splice((updateNum -1 ), 0, item);
+        console.log('2', normalItem)
+        dispatch(tabScreenNormalSuccess(normalItem));
+        navigation.goBack();
     }
 };

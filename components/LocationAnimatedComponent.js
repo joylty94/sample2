@@ -7,7 +7,7 @@ import Button from 'react-native-button';
 import ModalDropdown from 'react-native-modal-dropdown';
 import axios from 'axios';
 
-export default class NoteListAnimatedComponent extends Component {
+export default class LocationAnimatedComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -47,7 +47,7 @@ export default class NoteListAnimatedComponent extends Component {
         }).start()
     }
     handleDetail = (item, token) => {
-        this.props.navigation.navigate('Detail',  {item: ({...item, token })})
+        this.props.navigation.navigate('Detail', { item: ({ ...item, token, num: 3 })})
     }
     handleWebview = (item) => {
         this.props.navigation.navigate('Webview', item.url_meta)

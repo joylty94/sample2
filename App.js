@@ -73,10 +73,10 @@ const AppNavigator = createStackNavigator(
     },
     Detail: {
       screen: DetailScreen,
-      // navigationOptions: () => {
-      //   header = null;
-      //   return { header }
-      // },
+      navigationOptions: () => {
+        header = null;
+        return { header }
+      },
     },
     Webview: {
       screen: WebviewScreen,

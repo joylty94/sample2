@@ -87,14 +87,14 @@ export const dispatchDataSuccess = (num) => async (dispatch, getstate) => {
     if(num === 1) {
         let normalPage = 5
         await axios.get(`http://35.243.89.78:8082/v1/posts?limit=${normalPage}&order=desc&comments=0`).then(response => {
-            dispatch(tabScreenNormalSuccess(response))
+            dispatch(tabScreenNormalSuccess(response.data.result_data.posts))
         }).catch(e => {
             console.log(e)
         });
     } else if (num === 2){
         let popularityPage = 5
         await axios.get(`http://35.243.89.78:8082/v1/posts?limit=${popularityPage}&order=desc&comments=0&sort=likes`).then(response => {
-            dispatch(tabScreenPopularitySuccess(response))
+            dispatch(tabScreenPopularitySuccess(response.data.result_data.posts))
         }).catch(e => {
             console.log(e)
         });
@@ -105,7 +105,7 @@ export const dispatchDataSuccess = (num) => async (dispatch, getstate) => {
         if (latitude != null && longitude != null) {
             console.log('위치정보', latitude, longitude)
             await axios.get(`http://35.243.89.78:8082/v1/posts?limit=5&order=desc&latlng=${latitude},${longitude}`).then(response => {
-                dispatch(tabScreenLocationSuccess(response))
+                dispatch(tabScreenLocationSuccess(response.data.result_data.posts))
             }).catch(e => {
                 console.log(e)
             });

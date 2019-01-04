@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, FlatList, ScrollView, Text, ActivityIndicator } from "react-native";
 
-import NoteListAnimatedComponent from "../components/NoteListAnimatedComponent";
+import NormalAnimatedComponent from "../components/NormalAnimatedComponent";
 
 export default class NormalComponent extends Component {
     state = {
@@ -27,8 +27,8 @@ export default class NormalComponent extends Component {
         return (
             <ScrollView style={styles.container}>
                 <FlatList
-                    data={this.props.normal.data.result_data.posts}
-                    // extraData={this.state.page}
+                    data={this.props.normal}
+                    extraData={this.props.normal}
                     // onEndReached={this.handleEnd}
                     // onEndReachedThreshold={0}
                     ListFooterComponent={() =>
@@ -37,7 +37,7 @@ export default class NormalComponent extends Component {
                             : null}
                     renderItem={({ item, index }) => {
                         return (
-                            <NoteListAnimatedComponent item={item} {...rest} />
+                            <NormalAnimatedComponent item={item} {...rest} />
                         )
                     }}
                     keyExtractor={(item, index) => item.category + `${index}`}>

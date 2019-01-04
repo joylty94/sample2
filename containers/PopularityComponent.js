@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, FlatList } from 'react-native';
 import axios from 'axios';
 
-import NoteListAnimatedComponent from "../components/NoteListAnimatedComponent";
+import PopularityAnimatedComponent from "../components/PopularityAnimatedComponent";
 
 export default class PopularityComponent extends Component {
     state = {
@@ -27,7 +27,7 @@ export default class PopularityComponent extends Component {
         return (
             <ScrollView style={styles.container}>
                 <FlatList
-                    data={this.props.popularity.data.result_data.posts}
+                    data={this.props.popularity}
                     // extraData={this.state.page}
                     // onEndReached={this.handleEnd}
                     // onEndReachedThreshold={0.5}
@@ -37,7 +37,7 @@ export default class PopularityComponent extends Component {
                             : null}
                     renderItem={({ item, index }) => {
                         return (
-                            <NoteListAnimatedComponent item={item} {...rest} />
+                            <PopularityAnimatedComponent item={item} {...rest} />
                         )
                     }}
                     keyExtractor={(item, index) => item.category + `${index}`}>

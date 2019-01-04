@@ -4,32 +4,20 @@ import {
     AntDesign,
     FontAwesome
 } from '@expo/vector-icons';
-import { dispatchItem, dispatchLiked } from '../ducks/detailScreen'; 
+import { Header, Left, Body, Right, Icon, Title } from 'native-base';
+import { dispatchItem, dispatchLiked, dispatchBackData } from '../ducks/detailScreen'; 
 import { connect } from 'react-redux';
 import Button from 'react-native-button';
 
 class DetailScreen extends Component {
-    static navigationOptions = ({ navigation, navigationOptions }) => {
-        const { item } = navigation.state.params;
-        return {
-            title: item.target_pin.title,
-            headerLeft: (
-                <Button
-                // onPress= {() => alert('실행')}
-                >
-                    BACK
-                </Button>
-            )
-        }
-    };
     componentDidMount() {
         let { item } = this.props.navigation.state.params;
         this.props.onItem(item)
     }
 
-    // handleBack = () => {
-
-    // }
+    handleBack = (item, navigation) => {
+        this.props.onBackData(item, navigation)
+    }
 
     handleWebview = (item) => {
         this.props.navigation.navigate('Webview', item.url_meta)
@@ -45,6 +33,19 @@ class DetailScreen extends Component {
             console.log('아이템', item)
             return (
                 <View style={{flex:1}}>
+                    <Header>
+                        <Left>
+                            <Button
+                                onPress={() => this.handleBack(this.props.item, this.props.navigation)}>
+                                Back
+                            </Button>
+                        </Left>
+                        <Body>
+                            <Title>{item.target_pin.title}</Title>
+                        </Body>
+                        <Right>
+                        </Right>
+                    </Header>
                     <View style={{ borderBottomWidth: 1}}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingTop: 10 }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -136,6 +137,9 @@ export default connect(
         },
         onLiked: () => {
             dispatch(dispatchLiked());
+        },
+        onBackData: (item, navigation) => {
+            dispatch(dispatchBackData(item, navigation));
         },
     }),
 )(DetailScreen);
