@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
 import { Platform, StyleSheet, View, Text } from 'react-native';
-import { Container, Header, Tab, Tabs, ScrollableTab, Left, Body, Right, Title, Footer, FooterTab, Button } from 'native-base';
+import { Container, Header, Tab, Tabs, ScrollableTab, Left, Body, Right, Title, Footer, FooterTab } from 'native-base';
 import {
     AntDesign,
     MaterialIcons,
     FontAwesome,
 } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-// import Button from 'react-native-button'
+import Button from 'react-native-button'
 import { PermissionsAndroid } from 'react-native';
 import NormalComponent from '../containers/NormalComponent';
 import PopularityComponent from '../containers/PopularityComponent';
 import LocationComponent from '../containers/LocationComponent';
-import { dispatchMapSuccess, dispatchDataSuccess } from '../ducks/tabScreen';
+import { dispatchMapSuccess, dispatchDataSuccess, dispatchNextDataSuccess } from '../ducks/tabScreen';
 
 class TabScreen extends Component {
-    state = {
-    };
+    static navigationOptions = {
+        tabBarLabel: '홈',
+        tabBarIcon: ({ tintColor }) => (
+            <AntDesign name='home' size={25} color={tintColor}/>
+        )
+    }
 
     componentDidMount() {
         this.props.onMount();
@@ -79,8 +83,8 @@ class TabScreen extends Component {
 
     render() {
         const { ...rest } = this.props;
-        const token = this.props.navigation.state.params
-        const location = ({latitude:this.state.latitude , longitude:this.state.longitude, token:token})
+        const {token} = this.props.navigation.state.params
+        const location = ({latitude:this.props.latitude , longitude:this.props.longitude, token:token})
         return (
             <Container>
                 <Header>
@@ -105,26 +109,6 @@ class TabScreen extends Component {
                         <LocationComponent {...rest} token={token} />
                     </Tab>
                 </Tabs>
-                <Footer>
-                    <FooterTab>
-                        <Button badge vertical active>
-                            <AntDesign name="home" size={25} />
-                            <Text>홈</Text>
-                        </Button>
-                        <Button vertical onPress={() => this.props.navigation.navigate('Search')}>
-                            <FontAwesome name="compass" size={25} />
-                            <Text>탐색</Text>
-                        </Button>
-                        <Button badge vertical onPress={() => { this.props.navigation.navigate('Alarm') }}>
-                            <MaterialIcons active name="access-alarm" size={25} />
-                            <Text>알람</Text>
-                        </Button>
-                        <Button vertical onPress={() => this.props.navigation.navigate('Profile')}>
-                            <MaterialIcons name="person" size={25} />
-                            <Text>프로필</Text>
-                        </Button>
-                    </FooterTab>
-                </Footer>
             </Container>
         );
     }
@@ -136,8 +120,11 @@ export default connect(
         latitude: state.tabScreen.latitude,
         longitude: state.tabScreen.longitude,
         normal: state.tabScreen.normal,
+        normalNext: state.tabScreen.normalNext,
         popularity: state.tabScreen.popularity,
-        location: state.tabScreen.location
+        popularityNext: state.tabScreen.popularityNext,
+        location: state.tabScreen.location,
+        locationNext: state.tabScreen.locationNext,
     }),
     // mapDispatchToProps
     dispatch => ({
@@ -146,6 +133,9 @@ export default connect(
         },
         onData: (num) => {
             dispatch(dispatchDataSuccess(num));
+        },
+        onData2: (num) => {
+            dispatch(dispatchNextDataSuccess(num));
         },
     }),
 )(TabScreen);

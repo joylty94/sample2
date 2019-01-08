@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { tabScreenNormalSuccess } from './tabScreen';
+import { tabScreenNormalSuccess, dispatchDataSuccess } from './tabScreen';
 
 export const LOADING = 'detailScreen/LOADING';
 export const SUCCESS = "detailScreen/SUCCESS";
@@ -95,11 +95,21 @@ export const dispatchBackData = (item, navigation) => async (dispatch, getstate)
     const stateItem = getstate();
     const normalItem = stateItem.tabScreen.normal;
     if(item.num === 1){
-        console.log("1", normalItem)
-        let updateNum = normalItem.findIndex((data) => data.post_id === item.post_id);
-        normalItem.splice((updateNum -1 ), 0, item);
-        console.log('2', normalItem)
-        dispatch(tabScreenNormalSuccess(normalItem));
+        // let updateNum = normalItem.findIndex((data) => data.post_id === item.post_id);
+        // normalItem.splice((updateNum), 1, item);
+        dispatch(dispatchDataSuccess(1));
+        navigation.goBack();
+    }
+    if(item.num === 2){
+        // let updateNum = normalItem.findIndex((data) => data.post_id === item.post_id);
+        // normalItem.splice((updateNum), 1, item);
+        dispatch(dispatchDataSuccess(2));
+        navigation.goBack();
+    }
+    if(item.num === 3){
+        // let updateNum = normalItem.findIndex((data) => data.post_id === item.post_id);
+        // normalItem.splice((updateNum), 1, item);
+        dispatch(dispatchDataSuccess(3));
         navigation.goBack();
     }
 };

@@ -24,7 +24,6 @@ export default function (state = initialState, action) {
 }
 
 export const dispatchToken = ( navigation, token ) => async (dispatch) => {
-    dispatch(informationSuccess( token ));
-    console.log("저장완료", token.data.result_data)
-    navigation.navigate('Home', token.data.result_data.token )
+    dispatch(informationSuccess( token.data.result_data.token ));
+    navigation.replace('TabNavigator', {token:token.data.result_data.token} )
 };

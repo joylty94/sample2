@@ -1,59 +1,88 @@
 import * as Expo from "expo";
 import React, {Component} from "react";
-import { View, StyleSheet, TextInput, Alert } from "react-native";
+import { View, StyleSheet, TextInput, AsyncStorage, Alert } from "react-native";
 import { Button, Text, CheckBox } from 'native-base';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { dispatchToken } from '../ducks/informationScreen';
+import Storage from 'react-native-key-value-store';
 
 class InformationScreen extends Component {
     state = {
         nickName: null,
-        email: null,
+        // email: null,
     }
+
+    componentDidMount() {
+        this.postData()
+    }
+
     confirmation = async () => {
-        // if( this.state.email == null ){
-        //     Alert.alert(
-        //         "",
-        //         "이메일을 입력해주세요.",
-        //         [
-        //             { text: "OK" }
-        //         ],
-        //         { cancelable: false }
-        //     )
-        //     return;
-        // } else if( this.state.nickName == null){
-        //     Alert.alert(
-        //         "",
-        //         "별명을 입력해주세요.",
-        //         [
-        //             { text: "OK" }
-        //         ],
-        //         { cancelable: false }
-        //     )
-        //     return;
-        // }
+        if( this.state.nickName == null){
+            Alert.alert(
+                "",
+                "닉네임을 입력해주세요.",
+                [
+                    { text: "OK" }
+                ],
+                { cancelable: false }
+            )
+            return;
+        }
         await axios.post('http://35.243.89.78:8082/v1/join', {
             agreement_location_infomation: false,
             push_on: true,
             age: null,
             gender: null,
             device_id: Expo.Constants.deviceId,
-            email: this.state.email,
+            email: `${this.state.nickName}@gmail.com`,
             sign_type: "google",
             nick_name: this.state.nickName,
             profile_image: "default8"
         })
-        .then(response => { 
-            this.props.onToken(this.props.navigation, response)
+        .then(response => {
+            if(response.data.result_code === 0){
+                console.log('1111', Expo.Constants.deviceId, this.state.nickName )
+                Storage.set('device_id', ({ device_id: Expo.Constants.deviceId, nickName: this.state.nickName }));
+                this.props.onToken(this.props.navigation, response);
+            }
         })
         .catch(response => { console.log(response) });
     }
 
+    postData = async () => {
+        let value = await Storage.get('device_id', 'default value');
+        value = await Storage.get('device_id');
+        if(value != null){
+            if (value.device_id === Expo.Constants.deviceId){
+                this.setState({
+                    nickName: value.nickName
+                })
+            }
+        }
+    }
+
     render() {
+        console.log('nick', this.state.nickName)
         return (
-                <View style={{flax:1}}>
-                <View style={{ marginTop: 10, paddingHorizontal: 10 }}>
+            <View style={{flex:1, justifyContent:'space-between', paddingVertical: 10}}>
+                <View style={{ paddingHorizontal: 5, height: 50}}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="닉네임을 입력해주세요."
+                        placeholderTextColor='rgb(173,181,189)'
+                        underlineColorAndroid='rgb(255,255,255)'
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        onChangeText={(text) => {
+                            this.setState({
+                                nickName: text
+                            })
+                        }}
+                        value={this.state.nickName}
+                    />
+                </View>
+                {/* <View style={{ marginTop: 10, paddingHorizontal: 10 }}>
                     <Text style={styles.title}>이메일</Text>
                     <View>
                         <TextInput
@@ -69,7 +98,7 @@ class InformationScreen extends Component {
                                 })
                             }}
                         />
-                        {/* <Button light><Text> 중복체크 </Text></Button> */}
+                        <Button light><Text> 중복체크 </Text></Button>
                     </View>
                     <Text>별명정보는 최초 등록 후 변경이 불가합니다.</Text>
                 </View>
@@ -89,7 +118,7 @@ class InformationScreen extends Component {
                                     })
                                 }}
                             />
-                            {/* <Button light><Text> 중복체크 </Text></Button> */}
+                            <Button light><Text> 중복체크 </Text></Button>
                         </View>
                             <Text>별명정보는 최초 등록 후 변경이 불가합니다.</Text>
                     </View>
@@ -111,7 +140,7 @@ class InformationScreen extends Component {
                                 underlineColorAndroid='rgb(255,255,255)'
                                 autoCorrect={false}
                                 autoCapitalize="none"
-                            // onChangeText={}
+                            onChangeText={}
                             />
                             <CheckBox checked={false} />
                             <Text style={{marginLeft:15}}>나이 미입력</Text>
@@ -120,12 +149,14 @@ class InformationScreen extends Component {
                     <View style={{flexDirection:'row', justifyContent: 'space-around'}}>
                         <Text>서비스이용약관보기</Text>
                         <Text>개인정보취급방침보기</Text>
-                    </View>
-                        <Button block success style={{marginHorizontal:10}}
-                            onPress={() => this.confirmation()}>
-                            <Text>확인</Text>
-                        </Button>
+                    </View> */}
+                <View>
+                    <Button block success style={{marginHorizontal:10, height:50}}
+                        onPress={() => this.confirmation()}>
+                        <Text>확인</Text>
+                    </Button>
                 </View>
+            </View>
         );
     }
 }
@@ -167,7 +198,6 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 40,
-        paddingRight: 50,
         fontSize: 14,
         color: "rgb(52,58,64)",
         borderBottomWidth: 1,

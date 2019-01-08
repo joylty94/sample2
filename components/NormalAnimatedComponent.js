@@ -54,7 +54,6 @@ export default class NormalAnimatedComponent extends Component {
     }
     render() {
         const { item } = this.props;
-        console.log('아이템', item.post_id)
         return (
             <TouchableWithoutFeedback
                 onPressIn={() => this.AnimateIn()}

@@ -11,6 +11,12 @@ import {
 } from '@expo/vector-icons';
 
 export default class ProfileScreen extends Component {
+    static navigationOptions = {
+        tabBarLabel: '활동',
+        tabBarIcon: ({ tintColor }) => (
+            <AntDesign name='user' size={25} color={tintColor} />
+        )
+    }
     render() {
         return (
             <Container>
@@ -51,26 +57,6 @@ export default class ProfileScreen extends Component {
                         </Tab>
                     </Tabs>
                 </Content>
-                <Footer>
-                    <FooterTab>
-                        <Button badge vertical onPress={() => this.props.navigation.navigate('Home')}>
-                            <AntDesign name="home" size={25} />
-                            <Text>홈</Text>
-                        </Button>
-                        <Button vertical onPress={() => this.props.navigation.navigate('Search')}>
-                            <FontAwesome name="compass" size={25} />
-                            <Text>탐색</Text>
-                        </Button>
-                        <Button badge vertical onPress={() => { this.props.navigation.navigate('Alarm') }}>
-                            <MaterialIcons active name="access-alarm" size={25} />
-                            <Text>알람</Text>
-                        </Button>
-                        <Button vertical active>
-                            <MaterialIcons name="person" size={25} />
-                            <Text>프로필</Text>
-                        </Button>
-                    </FooterTab>
-                </Footer>
             </Container>
         )
     }

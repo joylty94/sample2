@@ -10,6 +10,12 @@ import {
 } from '@expo/vector-icons';
 
 export default class AlarmScreen extends Component {
+    static navigationOptions = {
+        tabBarLabel: '알람',
+        tabBarIcon: ({ tintColor }) => (
+            <MaterialIcons name='alarm' size={25} color={tintColor} />
+        )
+    }
     render() {
         return (
             <Container>
@@ -23,26 +29,6 @@ export default class AlarmScreen extends Component {
                     </Right>
                 </Header>
                 <Content></Content>
-                <Footer>
-                    <FooterTab>
-                        <Button badge vertical onPress={() => { this.props.navigation.navigate('Home') }}>
-                            <AntDesign name="home" size={25} />
-                            <Text>홈</Text>
-                        </Button>
-                        <Button vertical onPress={() => this.props.navigation.navigate('Search')}>
-                            <FontAwesome name="compass" size={25} />
-                            <Text>탐색</Text>
-                        </Button>
-                        <Button badge vertical active>
-                            <MaterialIcons active name="access-alarm" size={25} />
-                            <Text>알람</Text>
-                        </Button>
-                        <Button vertical onPress={() => this.props.navigation.navigate('Profile')}>
-                            <MaterialIcons name="person" size={25} />
-                            <Text>프로필</Text>
-                        </Button>
-                    </FooterTab>
-                </Footer>
             </Container>
         )
     }

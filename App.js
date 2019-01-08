@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 import thunk from 'redux-thunk';
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from 'redux';
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 import rootReducer from './ducks';
 
 import LoginScreen from './screen/LoginScreen';
@@ -17,60 +17,36 @@ import DetailScreen from './screen/DetailScreen';
 import WebviewScreen from './screen/WebviewScreen';
 import WritingScreen from './screen/WritingScreen';
 
-const LoginNavigator = createStackNavigator(
+const TabNavigator = createBottomTabNavigator(
   {
-    Login: {
-      screen: LoginScreen,
-      navigationOptions: () => {
-        header = null;
-        return { header }
-      }
+    Home: {
+      screen: TabScreen,
     },
-    Information: InformationScreen
+    Search: {
+      screen: SearchScreen,
+    },
+    Alarm: {
+      screen: AlarmScreen,
+    },
+    Profile: {
+      screen: ProfileScreen,
+    },
   },
   {
-    initialRouteName: "Login"
+    initialRouteName: "Home"
   }
 );
 
 const AppNavigator = createStackNavigator(
   {
-    Login: {
-      screen: LoginScreen,
-      navigationOptions: () => {
-        header = null;
-        return { header }
-      }
-    },
+    // Login: {
+    //   screen: LoginScreen,
+    //   navigationOptions: () => {
+    //     header = null;
+    //     return { header }
+    //   }
+    // },
     Information: InformationScreen,
-    Home: {
-      screen: TabScreen,
-      navigationOptions: () => {
-        header = null;
-        return { header }
-      },
-    },
-      Search: {
-      screen: SearchScreen,
-      navigationOptions: () => {
-        header = null;
-        return { header }
-      },
-    },
-    Alarm: {
-      screen: AlarmScreen,
-      navigationOptions: () => {
-        header = null;
-        return { header }
-      },
-    },
-    Profile: {
-      screen: ProfileScreen,
-      navigationOptions: () => {
-        header = null;
-        return { header }
-      },
-    },
     Detail: {
       screen: DetailScreen,
       navigationOptions: () => {
@@ -91,10 +67,18 @@ const AppNavigator = createStackNavigator(
       //   header = null;
       //   return { header }
       // },
-    }
+    },
+    TabNavigator: {
+      screen: TabNavigator,
+      headerMode: 'none',
+      navigationOptions: () => {
+        header = null;
+        return { header }
+      },
+    },
   },
   {
-    initialRouteName: "Login"
+    initialRouteName: "Information"
   }
 );
 

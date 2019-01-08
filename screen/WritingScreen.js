@@ -3,13 +3,13 @@ import { View, StyleSheet, TouchableOpacity, TextInput, Text, KeyboardAvoidingVi
 import Button from 'react-native-button';
 import { MaterialIcons, EvilIcons, AntDesign } from '@expo/vector-icons';
 import ModalDropdown from 'react-native-modal-dropdown';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { dispatchWriting } from '../ducks/writingScreen';
 
-export default class WebviewScreen extends Component {
-    static navigationOptions = ({ navigation }) => {
+class WritingScreen extends Component {
+    static navigationOptions = () => {
         return {
-            title: '글',
-            // headerRight:(<Button onPress={() => this.fetchInput()}>완료</Button>)
+            title: '글'
         };
     }
 
@@ -18,32 +18,11 @@ export default class WebviewScreen extends Component {
         anonymous: false
     }
 
-    fetchInput = async () => {
-        let location = this.props.navigation.state.params;
-        console.log('token', location.token)
-        console.log('latitude', location.latitude)
-        console.log('location', location.longitude)
-        await axios.post('http://35.243.89.78:8082/v1/post', {
-            content: this.state.text,
-            topic: "test111",
-            tags: ["stest", "ok_tags"],
-            latitude: location.latitude,
-            longitude: location.longitude,
-            is_anonymous: this.state.anonymous,
-            hash: "wyd8s31gme0"
-        },
-        {
-            headers: {
-                'content-type': 'application/json', 
-                'x-access-token': location.token },
-        })
-        .then(response => {
-            console.log('성공', response)
-        })
-        .catch(e => { console.log('에러', e) });
-    }
+    // fetchInput = (navigation, text, anonymous) => {
+    //     this.props.ondispatch(navigation, text, anonymous);
+    // }
+
     render() {
-        console.log('익명', this.state.anonymous)
         return (
             <KeyboardAvoidingView style={{flex:1}}>
                 <TouchableOpacity
@@ -81,15 +60,28 @@ export default class WebviewScreen extends Component {
                             // dropdownTextHighlightStyle={{height:10}} 
                             />
                     </View> */}
-                    <Button onPress={() => this.fetchInput()}>완료</Button>
+                    <Button onPress={() => this.props.ondispatch(this.props.navigation, this.state.text, this.state.anonymous)}>완료</Button>
                 </View>
             </KeyboardAvoidingView>
         );
     }
 }
 
+export default connect(
+    // mapStateToProps
+    state => ({
+    }),
+    // mapDispatchToProps
+    dispatch => ({
+        ondispatch: (navigation, text, anonymous) => {
+            dispatch(dispatchWriting(navigation, text, anonymous));
+        },
+    }),
+)(WritingScreen);
+
 const styles = StyleSheet.create({
     infoContainer: {
+        height: 50,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',

@@ -1,22 +1,17 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, FlatList } from 'react-native';
-import axios from 'axios';
+import PTRView from 'react-native-pull-to-refresh';
+import Spacer from '../components/Spacer';
 
 import PopularityAnimatedComponent from "../components/PopularityAnimatedComponent";
 
 export default class PopularityComponent extends Component {
-    state = {
-    };
-    
     componentDidMount() {
         this.props.onData(2)
     }
 
-    handleEnd = () => {
-        // this.setState({
-        //     page: this.state.page + 5
-        // })
-        // this.fetchData()
+    _refresh = () => {
+        this.props.onData(2)
     }
 
     render() {
@@ -25,23 +20,36 @@ export default class PopularityComponent extends Component {
             return <ActivityIndicator />
         }
         return (
-            <ScrollView style={styles.container}>
-                <FlatList
-                    data={this.props.popularity}
-                    // extraData={this.state.page}
-                    // onEndReached={this.handleEnd}
-                    // onEndReachedThreshold={0.5}
-                    ListFooterComponent={() =>
-                        this.state.loading
-                            ? <ActivityIndicator animating />
-                            : null}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <PopularityAnimatedComponent item={item} {...rest} />
-                        )
-                    }}
-                    keyExtractor={(item, index) => item.category + `${index}`}>
-                </FlatList>
+            <ScrollView
+                style={styles.container}
+                onScroll={event => {
+                    const ratio = event.nativeEvent.contentOffset.y / event.nativeEvent.contentSize.height;
+                    console.log('ratio', ratio)
+                    if (ratio < 0) {
+                        this._refresh()
+                    }
+                    if (ratio > 0.3) {
+                        this.props.onData2(2);
+                    }
+                }}>
+                <Spacer height={8} />
+                    <FlatList
+                        data={this.props.popularity}
+                        // extraData={this.state.page}
+                        // onEndReached={this.handleEnd}
+                        // onEndReachedThreshold={0.5}
+                        ListFooterComponent={() =>
+                            this.state.loading
+                                ? <ActivityIndicator animating />
+                                : null}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <PopularityAnimatedComponent item={item} {...rest} />
+                            )
+                        }}
+                        keyExtractor={(item, index) => item.category + `${index}`}>
+                    </FlatList>
+                <Spacer height={80} />
             </ScrollView>
         )
     }
