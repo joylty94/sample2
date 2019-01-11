@@ -3,12 +3,19 @@ import { tabScreenNormalSuccess, dispatchDataSuccess } from './tabScreen';
 
 export const LOADING = 'detailScreen/LOADING';
 export const SUCCESS = "detailScreen/SUCCESS";
+export const COMMENTSUCCESS = "detailScreen/COMMENTSUCCESS";
 export const LIKED = "detailScreen/LIKED";
 
-export function detailScreenSuccess(item) {
+export function detailScreenSuccess(item, commentItem) {
     return {
         type: SUCCESS,
-        item
+        item,
+        commentItem
+    };
+}
+export function commentSuccess() {
+    return {
+        type: COMMENTSUCCESS,
     };
 }
 
@@ -21,6 +28,7 @@ export function detailScreenLiked(item) {
 
 const initialState = {
     item: null,
+    commentItem: null,
     liked: false,
 }
 
@@ -30,7 +38,8 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 item: action.item,
-                liked: action.item.liked
+                liked: action.item.liked,
+                commentItem: action.commentItem
             };
         case LIKED:
             return {
@@ -44,15 +53,25 @@ export default function (state = initialState, action) {
 }
 
 export const dispatchItem = (item) => async (dispatch) => {
-    dispatch(detailScreenSuccess(item));
+    await axios.get(`http://35.243.89.78:8082/v1/post/${item.post_id}?comments=999`,
+        {
+            headers: {
+                'content-type': 'application/json',
+                'x-access-token': item.token
+            },
+        })
+        .then(response => {
+            setTimeout(() => {
+                dispatch(detailScreenSuccess(item, response.data.result_data.child));
+            }, 1000);
+        })
+        .catch(e => { console.log('에러', e) });
 };
 
 export const dispatchLiked = () => async (dispatch, getstate) => {
     const stateItem = getstate();
     const item = stateItem.detailScreen.item;
     if(item.liked){
-        console.log('라이크 토큰', item.token)
-        console.log('라이크 포스트 아이디', item.post_id)
         await axios.delete(`http://35.243.89.78:8082/v1/like/post/${item.post_id}`,
             {
                 headers: {
@@ -61,11 +80,13 @@ export const dispatchLiked = () => async (dispatch, getstate) => {
                 },
             })
             .then(response => {
+                console.log('like', response)
                 if (response.data.result_code === 0) {
                     item.liked = false;
                     item.likes = item.likes - 1;
-                    console.log('item정보', item)
-                    dispatch(detailScreenLiked(item))
+                    setTimeout(() => {
+                        dispatch(detailScreenLiked(item))
+                    }, 1000);
                 }
             })
             .catch(e => { console.log('에러', e) });
@@ -80,11 +101,14 @@ export const dispatchLiked = () => async (dispatch, getstate) => {
                 },
             })
             .then(response => {
+                console.log('like', response)
                 if(response.data.result_code === 0){
                     item.liked= true;
                     item.likes= item.likes + 1;
                     console.log('item정보', item)
-                    dispatch(detailScreenLiked(item))
+                    setTimeout(() => {
+                        dispatch(detailScreenLiked(item))
+                    }, 1000);
                 }
             })
             .catch(e => { console.log('에러', e) });
@@ -97,19 +121,57 @@ export const dispatchBackData = (item, navigation) => async (dispatch, getstate)
     if(item.num === 1){
         // let updateNum = normalItem.findIndex((data) => data.post_id === item.post_id);
         // normalItem.splice((updateNum), 1, item);
-        dispatch(dispatchDataSuccess(1));
         navigation.goBack();
+        // setTimeout(() => {
+            dispatch(dispatchDataSuccess(1));
+        // }, 2000);
     }
     if(item.num === 2){
         // let updateNum = normalItem.findIndex((data) => data.post_id === item.post_id);
         // normalItem.splice((updateNum), 1, item);
-        dispatch(dispatchDataSuccess(2));
         navigation.goBack();
+        // setTimeout(() => {
+            dispatch(dispatchDataSuccess(2));
+        // }, 2000);
     }
     if(item.num === 3){
         // let updateNum = normalItem.findIndex((data) => data.post_id === item.post_id);
         // normalItem.splice((updateNum), 1, item);
-        dispatch(dispatchDataSuccess(3));
         navigation.goBack();
+        // setTimeout(() => {
+            dispatch(dispatchDataSuccess(3));
+        // }, 2000);
     }
 };
+
+export const dispatchComment = (text) => async (dispatch, getstate) => {
+    const stateItem = getstate();
+    const item = stateItem.detailScreen.item;
+    const latitude = stateItem.tabScreen.latitude;
+    const longitude = stateItem.tabScreen.longitude;
+    const commentItem = stateItem.detailScreen.commentItem;
+    await axios.post(`http://35.243.89.78:8082/v1/post`, {
+        content: text,
+        topic: "xxxtest1",
+        tags: ["xxxtest"],
+        latitude: latitude,
+        longitude: longitude,
+        is_anonymous: false,
+        parent_post_id: item.post_id
+    },
+        {
+            headers: {
+                'content-type': 'application/json',
+                'x-access-token': item.token
+            },
+        })
+        .then(response => {
+            console.log('실행1', response)
+            if (response.data.result_code === 0) {
+                setTimeout(() => {
+                    dispatch(dispatchItem(item))
+                }, 2000);
+            }
+        })
+        .catch(e => { console.log('에러', e) });
+}

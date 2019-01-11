@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, TouchableWithoutFeedback, Animated, View, Text, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableWithoutFeedback, Animated, View, Text, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import {
     AntDesign,
 } from '@expo/vector-icons';
@@ -54,7 +54,9 @@ export default class PopularityAnimatedComponent extends Component {
     }
     render() {
         const { item } = this.props;
-        console.log('아이템', item.post_id)
+        if (!item) {
+            return <ActivityIndicator animating />
+        }
         return (
             <TouchableWithoutFeedback
                 onPressIn={() => this.AnimateIn()}
@@ -82,36 +84,39 @@ export default class PopularityAnimatedComponent extends Component {
                             </Button>
                         </View>
                         {
-                            (this.state.lines) 
+                            (item.content != null)
                             ?
-                                <View style={{ padding: 10 }}>
-                                    <Text numberOfLines={false} style={{ fontSize: 18, fontWeight: '300', textAlign: 'justify' }}>
-                                        {item.content}
-                                    </Text>
-                                </View>
-                            :
-                                (item.content.length < 500)
+                                (this.state.lines) 
                                 ?
                                     <View style={{ padding: 10 }}>
-                                        <Text numberOfLines={10} style={{ fontSize: 16, fontWeight: '300', marginBottom: 8, textAlign: 'justify' }}>
+                                        <Text numberOfLines={false} style={{ fontSize: 18, fontWeight: '300', textAlign: 'justify' }}>
                                             {item.content}
                                         </Text>
-                                    </View>   
+                                    </View>
                                 :
-                                    <View style={{ padding: 10}}>
-                                        <Text numberOfLines={10} style={{ fontSize: 16, fontWeight: '300', marginBottom: 8, textAlign: 'justify' }}>
-                                            {item.content}
-                                        </Text>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end'}}>
-                                            <Button onPress={() => this.setState({
-                                                lines: true
-                                            })}
-                                            style={{ fontSize: 14, color:'#000'}}> 
-                                            더보기
-                                            </Button>
+                                    (item.content.length < 500)
+                                    ?
+                                        <View style={{ padding: 10 }}>
+                                            <Text numberOfLines={10} style={{ fontSize: 16, fontWeight: '300', marginBottom: 8, textAlign: 'justify' }}>
+                                                {item.content}
+                                            </Text>
+                                        </View>   
+                                    :
+                                        <View style={{ padding: 10}}>
+                                            <Text numberOfLines={10} style={{ fontSize: 16, fontWeight: '300', marginBottom: 8, textAlign: 'justify' }}>
+                                                {item.content}
+                                            </Text>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                                <Button onPress={() => this.setState({
+                                                    lines: true
+                                                })}
+                                                style={{ fontSize: 14, color:'#000'}}> 
+                                                더보기
+                                                </Button>
+                                            </View>
                                         </View>
-                                    </View>        
-                        }
+                            :   null     
+                        } 
                         {
                             (item.url_meta)
                             ?

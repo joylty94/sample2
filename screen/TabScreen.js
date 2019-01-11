@@ -125,6 +125,7 @@ export default connect(
         popularityNext: state.tabScreen.popularityNext,
         location: state.tabScreen.location,
         locationNext: state.tabScreen.locationNext,
+        loading: state.tabScreen.loading,
     }),
     // mapDispatchToProps
     dispatch => ({

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity, TextInput, Text, KeyboardAvoidingView, Switch } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TextInput, Text, KeyboardAvoidingView, Switch, Alert } from 'react-native';
 import Button from 'react-native-button';
 import { MaterialIcons, EvilIcons, AntDesign } from '@expo/vector-icons';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -18,9 +18,21 @@ class WritingScreen extends Component {
         anonymous: false
     }
 
-    // fetchInput = (navigation, text, anonymous) => {
-    //     this.props.ondispatch(navigation, text, anonymous);
-    // }
+    handleText = (navigation, text, anonymous) => {
+        console.log('글',text)
+        if (text == null || text === '') {
+            Alert.alert(
+                "",
+                "글을 입력해주세요.",
+                [
+                    { text: "OK" }
+                ],
+                { cancelable: false }
+            )
+        } else {
+            this.props.ondispatch(navigation, text, anonymous)
+        }
+    }
 
     render() {
         return (
@@ -60,7 +72,7 @@ class WritingScreen extends Component {
                             // dropdownTextHighlightStyle={{height:10}} 
                             />
                     </View> */}
-                    <Button onPress={() => this.props.ondispatch(this.props.navigation, this.state.text, this.state.anonymous)}>완료</Button>
+                    <Button onPress={() => this.handleText(this.props.navigation, this.state.text, this.state.anonymous)}>완료</Button>
                 </View>
             </KeyboardAvoidingView>
         );

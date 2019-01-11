@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Alert } from 'react-native';
 import { dispatchDataSuccess } from './tabScreen';
 
 export const SUCCESS = "writingScreen/SUCCESS";
@@ -29,9 +28,6 @@ export const dispatchWriting = (navigation, text, anonymous) => async (dispatch,
     const latitude = stateItem.tabScreen.latitude;
     const longitude = stateItem.tabScreen.longitude;
     const token = stateItem.informationScreen.token;
-    console.log('token', token)
-    console.log('latitude', latitude)
-    console.log('longitude', longitude)
     await axios.post('http://35.243.89.78:8082/v1/post', {
         content: text,
         topic: "test111",
@@ -48,10 +44,13 @@ export const dispatchWriting = (navigation, text, anonymous) => async (dispatch,
             },
     })
         .then(response => {
-            console.log('성공', response)
+            console.log('response', response)
             if (response.data.result_code === 0) {
-                // dispatch(dispatchDataSuccess(1));
-                navigation.navigate('TabNavigator');     
+                navigation.navigate('TabNavigator');
+                setTimeout(() => {
+                    dispatch(dispatchDataSuccess(1))
+                }, 2000);
+                dispatch(dispatchDataSuccess(3));
             }
         })
         .catch(e => { console.log('에러', e) });

@@ -25,5 +25,6 @@ export default function (state = initialState, action) {
 
 export const dispatchToken = ( navigation, token ) => async (dispatch) => {
     dispatch(informationSuccess( token.data.result_data.token ));
+    console.log('token', token.data.result_data.token)
     navigation.replace('TabNavigator', {token:token.data.result_data.token} )
 };
